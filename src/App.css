@@ -1,3 +1,20 @@
 .navbar-nav a {
   font-size: 18px;
 }
+
+.background {
+  background-image: url('/public/assets/elegant-white-background-with-circular-elements.jpg');
+  background-size: cover;
+  background-position: center;
+  /* Add any other background styles you desire */
+}
+/* .input-icon {
+  position: absolute;
+  top: 12px;
+  left: 10px;
+  color: gray;
+}
+
+.button-icon {
+  margin-right: 10px;
+} */

@@ -1,13 +1,13 @@
-// here we will impelement what we want to do in cart page (additem or delete item) from products
-
-export const AddItem = (product)=>{
+// For Add Item to Cart
+export const addCart = (product) => {
     return{
         type : "ADDITEM",
         payload : product
     }
 }
 
-export const DeleteItem = (product)=>{
+// For Delete Item From Cart
+export const delCart = (product) => {
     return{
         type : "DELITEM",
         payload : product

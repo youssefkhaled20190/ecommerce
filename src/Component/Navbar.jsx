@@ -1,9 +1,15 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-const Navbar = () => {
+const Navbar = ({token  , setToken}) => {
 
   const state =  useSelector((state)=>state.handleCart)
+
+
+  const logoutHandeler = ()=>{
+    setToken("");
+    localStorage.clear()
+  }
   return (
     <div>
       <nav className="navbar navbar-expand-lg  navbar-light bg-white py-3 shadow-sm">
@@ -31,12 +37,12 @@ const Navbar = () => {
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/Products">
-                 Products
+                  Products
                 </NavLink>
               </li>
 
               <li className="nav-item">
-                <NavLink className="nav-link" to="/About">
+                <NavLink to='/about' className="nav-link" >
                   About
                 </NavLink>
               </li>
@@ -48,16 +54,25 @@ const Navbar = () => {
               </li>
             </ul>
             <div className="buttons">
-                <NavLink  to="/Login" className="btn btn-outline-dark">
-                    <i className="fa fa-sign-in me-1"></i>Login</NavLink>
+              {!token ? (
+                <NavLink to="/login" className="btn btn-outline-dark">
+                  <i className="fa fa-sign-in me-1"></i>Login
+                </NavLink>
+              ) : null}
 
-                    <NavLink  to="/Register" className="btn btn-outline-dark ms-2">
-                    <i className="fa fa-user-plus me-1"></i>Register</NavLink>
+              <NavLink to="/Cart" className="btn btn-outline-dark ms-2">
+                <i className="fa fa-shopping-cart me-1"></i>Cart ({state.length}
+                ){" "}
+              </NavLink>
 
-                    <NavLink  to="/Cart" className="btn btn-outline-dark ms-2">
-                    <i className="fa fa-shopping-cart me-1"></i>Cart ({state.length}) </NavLink>
+              <button
+                className="btn btn-outline-dark ms-2 "
+                onClick={() => logoutHandeler()}
+              >
+                <i className="fa fa-sign-out"></i>
+                logout
+              </button>
             </div>
-           
           </div>
         </div>
       </nav>

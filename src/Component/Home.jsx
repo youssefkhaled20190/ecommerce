@@ -9,7 +9,7 @@ const Home = () => {
       padding: "6px",
     },
     m2: {
-      color: "black",
+      color: "#b0b0b0b2",
       margin: "18px",
     },
   };
@@ -17,7 +17,7 @@ const Home = () => {
     <div className="hero">
       <div className="card bg-dark  text-white border-0 ">
         <img
-          src="./assets/bgg.jpg"
+          src="./assets/pretty-young-stylish-sexy-woman-pink-luxury-dress-summer-fashion-trend-chic-style-sunglasses.jpg"
           className="card-img"
           alt="Background"
           height="550px"

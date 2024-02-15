@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
+import axios from "axios";
 import { NavLink } from "react-router-dom";
 
 const Products = () => {
@@ -8,25 +9,50 @@ const Products = () => {
   const [filter, setFilter] = useState(data);
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
-  let ComponentMounted = true;
+  // let ComponentMounted = true;
+
+
 
   useEffect(() => {
-    const getAllProducts = async () => {
-      setLoading(true);
-      const Response = await fetch("https://fakestoreapi.com/products");
-      if (ComponentMounted) {
-        setData(await Response.clone().json());
-        setFilter(await Response.json());
-        setLoading(false);
-        console.log(filter);
+    const FetchData = async() => {
+      try {
+        setLoading(true);
+        const response =  await axios
+          .get("https://fakestoreapi.com/products")
+          .then((res) => {
+            setData(res.data);
+            setFilter(res.data)
+            setLoading(false)
+          });
+      } catch (error) {
+        console.error("Error in FETCHING DATA", error);
       }
-      return () => {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        ComponentMounted = false;
-      };
     };
-    getAllProducts();
+    FetchData();
   }, []);
+
+
+
+
+
+
+  // useEffect(() => {
+  //   const getAllProducts = async () => {
+  //     setLoading(true);
+  //     const Response = await fetch("https://fakestoreapi.com/products");
+  //     if (ComponentMounted) {
+  //       setData(await Response.clone().json());
+  //       setFilter(await Response.json());
+  //       setLoading(false);
+  //       console.log(filter);
+  //     }
+  //     return () => {
+  //       // eslint-disable-next-line react-hooks/exhaustive-deps
+  //       ComponentMounted = false;
+  //     };
+  //   };
+  //   getAllProducts();
+  // }, []);
 
   const Loaddata = () => {
     return (
