@@ -1,43 +1,33 @@
-/* eslint-disable no-unused-vars */
 import "./App.css";
 import Home from "./Component/Home";
-import Navbar from "./Component/Navbar";
-import { Routes , Route , Router} from "react-router-dom";
 import Products from "./Component/Products";
-import Product from "./Component/product";
+import Product from "./Component/product.jsx";
 import Cart from "./Component/Cart";
-import Login from "./Component/Login";
 import Checkout from "./Component/Checkout";
 import About from "./Component/About";
 import Contact from "./Component/Contact";
+import { Routes, Route } from "react-router-dom"; // Remove BrowserRouter here
+// import LoginSignup from "./Pages/AuthPage/FullAuth.js";
+import ProtectedRoute from "./Component/Auth.js";
+import AuthenticatedLayout from "./Component/AuthLayout.js";
+import Login from "./Component/Login.jsx";
 
-import { useState } from "react";
 function App() {
-
-  const [token , setToken] = useState(localStorage.getItem("userToken")?? null)
   return (
-    <>
-      {token ? (
-        <>
-          <Navbar token={token}  setToken={setToken}/>
-          <Routes>
-            <Route exact path="/" Component={Home} />
-            <Route exact path="/Products" Component={Products} />
-            <Route exact path="/Products/:id" Component={Product} />
-            <Route exact path="/cart" element={<Cart />} />
-            <Route exact path="/checkout" element={<Checkout/>} />
-            <Route exact path="/about" element={<About/>} />
-            <Route exact path="/contact" element={<Contact/>} />
-
-
-
-            
-          </Routes>
-        </>
-      ) : (
-        <Login token={token} setToken={setToken} />
-      )}
-    </>
+    <Routes>
+      <Route path="/login" element={<Login/>} />
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AuthenticatedLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<Product />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 }
 

@@ -17,13 +17,13 @@ const Home = () => {
     <div className="hero">
       <div className="card bg-dark  text-white border-0 ">
         <img
-          src="./assets/pretty-young-stylish-sexy-woman-pink-luxury-dress-summer-fashion-trend-chic-style-sunglasses.jpg"
+          src="./assets/top-view-christmas-shopping-composition.jpg"
           className="card-img"
           alt="Background"
           height="550px"
         />
         <div className="card-img-overlay d-flex flex-coulmn justify-content-center">
-          <div className="container">
+          <div style={{display:"flex" , flexDirection:"column" , marginLeft:"801px" , marginTop:"217px"}}>
             <h5 className="card-title display-4 fw-bolder mb-0" style={style.m1}>
               NEW SEASON ARRIVALS
             </h5>

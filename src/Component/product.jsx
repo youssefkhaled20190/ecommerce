@@ -4,27 +4,49 @@ import { addCart } from '../redux/actions';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
+import axiosInstance from '../axios/axiosInstance';
+
+import RateProduct from './Rate';
 
 const Product = () => {
 
     const {id} = useParams();
     const [product, setProduct] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [categoryName , setcategoryName]=useState("");
+    const [modalShow, setModalShow] = useState(false);
 
     const dispatch = useDispatch();
     const addProduct = (product) => {
+        console.log("called")
         dispatch(addCart(product));
     }
 
-    useEffect(() => {
-        const getProduct = async () => {
-            setLoading(true);
-            const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-            setProduct(await response.json());
-            setLoading(false);
-        }
-        getProduct();
-    }, [id]);
+
+ 
+
+     useEffect(() => {
+       if (id) {
+         const fetchProduct = async () => {
+           try {
+             const response = await axiosInstance.get(`Product/${id}`);
+             setProduct(response.data);
+             const categoryName = await axiosInstance.get(
+               `Category/${response.data.categoryId}`
+             );
+             setcategoryName(categoryName.data.categoryName);
+           } catch (error) {
+             console.error(
+               "Error fetching product:",
+               error.response ? error.response.data : error.message
+             );
+           }
+         };
+         fetchProduct();
+       }
+     }, [id]);
+
+
 
     const Loading = () => {
         return(
@@ -48,22 +70,25 @@ const Product = () => {
         return(
             <>
                 <div className="col-md-6">
-                    <img src={product.image} alt={product.title} height="400px" width="400px" />
+                    <img src={`https://localhost:7121/files/Images/${product.imageName}`} alt={product.productTittle} height="500px" width="500px" />
                 </div>
                 <div className="col-md-6">
                     <h4 className="text-uppercase text-black-50">
-                        {product.category}
+                        {categoryName}
                     </h4>
-                    <h1 className="display-5">{product.title}</h1>
+                    <h1 className="display-5">{product.productTittle}</h1>
                     <p className="lead fw-bolder">
-                        Rating {product.rating && product.rating.rate} 
-                        <i className="fa fa-star"></i>
+                        Rating {product.rating} 
+                        <i className="fa fa-star" style={{margin: "16px"}}></i>
                     </p>
                     <h3 className="display-6 fw-bold my-4">
-                        $ {product.price}
+                        $ {product.productPrice}
                     </h3>
-                    <p className="lead">{product.description}</p>
-                    <button className="btn btn-outline-dark px-4 py-2" onClick={()=>addProduct(product)}>
+                    <p className="lead">{product.productDescription}</p>
+                    <button className="btn btn-outline-primary px-4 py-2" style={{margin:"6px"}} onClick={() => setModalShow(true)}>
+                        Rate
+                    </button>
+                    <button className="btn btn-outline-primary px-4 py-2" onClick={()=>addProduct(product)}>
                         Add to Cart
                     </button>
                     <NavLink to="/Cart" className="btn btn-dark ms-2 px-3 py-2">
@@ -75,13 +100,15 @@ const Product = () => {
     }
 
     return (
-        <div>
-            <div className="container py-5">
-                <div className="row py-4">
-                    {loading ? <Loading/> : <ShowProduct/>}
-                </div>
-            </div>
+      <div>
+        <div className="container py-5">
+          <div className="row py-4">
+            {loading ? <Loading /> : <ShowProduct />}
+          </div>
         </div>
+
+        <RateProduct show={modalShow} onHide={() => setModalShow(false)} productId={id} />
+      </div>
     );
 }
 

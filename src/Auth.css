@@ -1,0 +1,26 @@
+.authenticated-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .navbar {
+    flex: 0 0 auto;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1 1 auto;
+    background-color: #f8f9fa;
+  }
+  
+  .sidebar {
+    flex: 0 0 250px; /* or whatever width you want */
+  }
+  
+  .content {
+    flex: 1 1 auto;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  

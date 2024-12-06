@@ -3,57 +3,30 @@ import React, { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
 
 const Products = () => {
-  const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
+  // const [data, setData] = useState([]);
+  
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   // let ComponentMounted = true;
+  const [products, setProducts] = useState([]);
+  const [filter, setFilter] = useState(products);
 
 
-
+  const fetchProducts = async () => {
+    try {
+      const response = await axiosInstance.get("Product");
+      console.log("Fetched products:", response.data); // Log fetched data
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   useEffect(() => {
-    const FetchData = async() => {
-      try {
-        setLoading(true);
-        const response =  await axios
-          .get("https://fakestoreapi.com/products")
-          .then((res) => {
-            setData(res.data);
-            setFilter(res.data)
-            setLoading(false)
-          });
-      } catch (error) {
-        console.error("Error in FETCHING DATA", error);
-      }
-    };
-    FetchData();
+    fetchProducts();
   }, []);
-
-
-
-
-
-
-  // useEffect(() => {
-  //   const getAllProducts = async () => {
-  //     setLoading(true);
-  //     const Response = await fetch("https://fakestoreapi.com/products");
-  //     if (ComponentMounted) {
-  //       setData(await Response.clone().json());
-  //       setFilter(await Response.json());
-  //       setLoading(false);
-  //       console.log(filter);
-  //     }
-  //     return () => {
-  //       // eslint-disable-next-line react-hooks/exhaustive-deps
-  //       ComponentMounted = false;
-  //     };
-  //   };
-  //   getAllProducts();
-  // }, []);
-
   const Loaddata = () => {
     return (
     <>
@@ -70,9 +43,9 @@ const Products = () => {
     );
   };
 
-  const filterProduct = (cat)=>{
+  const filterProduct = (catId)=>{
 
-    const UpdatedList = data.filter((x)=>x.category === cat);
+    const UpdatedList = products.filter((x)=>x.categoryId === catId);
     setFilter(UpdatedList);
 
   }
@@ -81,24 +54,23 @@ const Products = () => {
     return (
       <>
         <div className="buttons d-flex justify-content-center mb-5 pd-5">
-          <div className="btn btn-outline-dark me-2" onClick={()=>setFilter(data)}>All</div>
-          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct("men's clothing")}>Men's Clothing</div>
-          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct("women's clothing")}>Women's Clothing</div>
-          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct("jewelery")}>jewelery</div>
-          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct("electronics")}>Electronics</div>
+          <div className="btn btn-outline-dark me-2" onClick={()=>setFilter(products)}>All</div>
+          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct(2)}>Men's Clothing</div>
+          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct(3)}>Women's Clothing</div>
+          <div className="btn btn-outline-dark me-2" onClick={()=>filterProduct(1)}>Accessories</div>
         </div>
 
-        {filter.map((product) => {
+        {filter.map((products) => {
           return (
             <div className="col-md-3 mb-4">
-              <div className="card h-100 text-center p-4" key={product.id}>
-                <img src={product.image} class="card-img-top" alt={product.title} height="250px" />
+              <div className="card h-100 text-center p-4" key={products.id}>
+                <img src={`https://localhost:7121/files/Images/${products.imageName}`} class="card-img-top" alt={products.productTittle} height="250px" />
                 <div className="card-body">
-                  <h5 className="card-title mb-0">{product.title.substring(0,12)} ...</h5>
+                  <h5 className="card-title mb-0">{products.productTittle.substring(0,12)} ...</h5>
                   <p className="card-text lead fw-bold">
-                   ${product.price}
+                   ${products.productPrice}
                   </p>
-                  <NavLink to={`/products/${product.id}`} className="btn btn-outline-dark">
+                  <NavLink to={`/products/${products.id}`} className="btn btn-outline-primary">
                    Buy Now
                   </NavLink>
                 </div>

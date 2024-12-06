@@ -1,180 +1,187 @@
 import React, { useState } from "react";
-
 import { useFormik } from "formik";
-import "../App.css"
+import "../App.css";
 
-// eslint-disable-next-line no-unused-vars
-import { Card, CardBody, CardHeader , Input , Button , Row , Col , Form, CardTitle , Label, FormGroup , Container , CardImg, Alert} from "reactstrap";
+import { Card, CardBody, CardHeader, Input, Button, Row, Col, Form, CardTitle, Label, FormGroup, Container, CardImg, Alert } from "reactstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faInstagram, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import {faArrowRight} from '@fortawesome/free-solid-svg-icons';
+import { faInstagram, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
+const Auth = () => {
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-
-
-
-// const validate = (values) => {
-//   const errors = {};
-//   if (!values.Username) {
-//     errors.Username = "Required";
-//   } else if (values.Username.length < 2) {
-//     errors.Username = "The name must be above 2 chars";
-//   }
-
-//   if (!values.Password) {
-//     errors.Password = "Required";
-//   } else if (values.Password.length < 4) {
-//     errors.Password = "The name must be above 4 chars";
-//   }
-//   return errors;
-// };
-
-const validate = (values) => {
+  const validateLogin = (values) => {
     const errors = {};
-    if (!values.Username) {
-      errors.Username = "Required";
-    } else if (values.Username.length < 2) {
-      errors.Username = "The name must be above 2 chars";
+    if (!values.email) {
+      errors.email = "Required";
+    } else if (values.email.length < 2) {
+      errors.email = "The Email must be above 2 chars";
     }
-  
-    if (!values.Password) {
-      errors.Password = "Required";
-    } else if (values.Password.length < 4) {
-      errors.Password = "The name must be above 4 chars";
+
+    if (!values.password) {
+      errors.password = "Required";
+    } else if (values.password.length < 4) {
+      errors.password = "The Password must be above 4 chars";
     }
+
     return errors;
   };
 
+  const validateRegister = (values) => {
+    const errors = {};
+    if (!values.email) {
+      errors.email = "Required";
+    } else if (values.email.length < 2) {
+      errors.email = "The Email must be above 2 chars";
+    }
 
+    if (!values.password) {
+      errors.password = "Required";
+    } else if (values.password.length < 4) {
+      errors.password = "The Password must be above 4 chars";
+    }
 
-const Login = ({ token, setToken }) => {
-  const formik = useFormik({
+    if (!values.fullname ) {
+      errors.fullname = "Required";
+    }
+
+    return errors;
+  };
+
+  const loginFormik = useFormik({
     initialValues: {
-      Username: "",
-      Password: "",
+      email: "",
+      password: "",
     },
-    validate,
-    onSubmit: (values) => {
-      console.log("success");
+    validate: validateLogin,
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post("https://localhost:7121/api/Authentication/login", {
+          email: values.email,
+          password: values.password,
+        });
+
+        if (response.status === 200) {
+          setSuccess(true);
+          setError("");
+          const { token, userId } = response.data;
+          localStorage.setItem("token", token);
+          localStorage.setItem("userId", userId);
+          navigate("/");
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || "Login failed!");
+        setSuccess(false);
+      }
     },
   });
 
-//   const [Username, setUsername] = useState("");
-//   const [Password, setPassword] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const [Error, setError] = useState("");
-  const loginHandeler = () => {
+  const registerFormik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      fullname: ""
+    },
+    validate: validateRegister,
+    onSubmit: async (values) => {
+      try {
+        // Making POST request
+        const response = await axios({
+          url: "https://localhost:7121/api/Authentication/register", // Corrected URL
+          method: 'POST',
+          data: {
+            email: values.email,
+            password: values.password,
+            fullname: values.fullname
+          },
+        });
 
-    axios({
-      url: "https://fakestoreapi.com/auth/login",
-      method: 'POST',
-      data: {
-        username: formik.values.Username,
-        password: formik.values.Password,
-      },
-    }).then((res) => {
-      console.log(res.data.token);
-      setToken(res.data.token);
-      localStorage.setItem("userToken" , res.data.token)
-    }).catch((err)=>{
-        console.error(err)
-        setError(err.response.data)
-    })
-  };
+        if (response.status === 200) {
+          setSuccess(true); // Registration successful
+          setError(null);   // Clear any error messages
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Registration failed!');
+        setSuccess(false);   // Show error message
+      }
+    },
+  });
 
   return (
     <>
       <div className="background">
-        <Container
-          className="d-flex align-items-center justify-content-center"
-          style={{ height: "100vh" }}
-        >
+        <Container className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <h1 style={{ fontSize: "96px", marginBottom: "56px" }}>
-                Welcome
-              </h1>
-              <img
-                src="/assets/49390-middle-removebg-preview.png"
-                alt="Logo"
-                style={{
-                  width: "100px",
-                  marginRight: "20px",
-                  marginBottom: "44px",
-                }}
-              />
+              <h1 style={{ fontSize: "96px", marginBottom: "56px" , color:"white"}}>
+                Hello,Friend
+                </h1>
+              <img src="/assets/49390-middle-removebg-preview.png" alt="Logo" style={{ width: "100px", marginRight: "20px", marginBottom: "44px" }} />
             </div>
-            <h2
-              style={{
-                fontSize: "25px",
-                marginRight: "56px",
-                marginBottom: "117px",
-                color: "#5656567d",
-              }}
-            >
-              Enter your email and password to discover more products
+            <h2 style={{ fontSize: "25px", marginRight: "56px", marginBottom: "117px", color: "rgb(24 36 69)" }}>
+              {isRegistering ? "Join us today and start your journey towards a smarter shopping experience!" : "Unlock the world of exclusive deals and amazing products with just a click."}
             </h2>
           </div>
           <Row className="justify-content-center">
             <Col xs={12} sm={12} md={12}>
-              <Card
-                style={{
-                  width: "400px",
-                  backgroundColor: "#e7e7e7",
-                  border: "none",
-                  padding: "10px",
-                }}
-              >
+              <Card style={{ width: "400px", backgroundColor: "rgb(231 231 231 / 84%)", border: "none", padding: "10px" }}>
                 <CardImg top src="/assets/empty-cart.png" />
                 <CardBody>
-                  <Form onSubmit={formik.handleSubmit}>
+                  <Form onSubmit={isRegistering ? registerFormik.handleSubmit : loginFormik.handleSubmit}>
                     <Col>
                       <FormGroup className="pb-2 mr-sm-2 mb-sm-0">
                         <Input
-                          id="Username"
-                          name="Username"
+                          id="email"
+                          name="email"
                           placeholder="Username or Email"
                           type="text"
-                          onChange={formik.handleChange}
-                          value={formik.values.Username}
+                          onChange={isRegistering ? registerFormik.handleChange : loginFormik.handleChange}
+                          value={isRegistering ? registerFormik.values.email : loginFormik.values.email}
                         />
                       </FormGroup>
+                      {isRegistering && registerFormik.errors.email && <div style={{ color: "red" }}>{registerFormik.errors.email}</div>}
+                      {!isRegistering && loginFormik.errors.email && <div style={{ color: "red" }}>{loginFormik.errors.email}</div>}
 
-                      {formik.errors.Username ? (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.Username}
-                        </div>
-                      ) : null}
                       <FormGroup className="pb-2 mr-sm-2 mb-sm-0">
                         <Input
-                          id="Password"
-                          name="Password"
+                          id="password"
+                          name="password"
                           placeholder="Password"
                           type="password"
-                          onChange={formik.handleChange}
-                          value={formik.values.Password}
+                          onChange={isRegistering ? registerFormik.handleChange : loginFormik.handleChange}
+                          value={isRegistering ? registerFormik.values.password : loginFormik.values.password}
                         />
                       </FormGroup>
+                      {isRegistering && registerFormik.errors.password && <div style={{ color: "red" }}>{registerFormik.errors.password}</div>}
+                      {!isRegistering && loginFormik.errors.password && <div style={{ color: "red" }}>{loginFormik.errors.password}</div>}
 
-                      {formik.errors.Password ? (
-                        <div style={{ color: "red" }}>
-                          {formik.errors.Password}
-                        </div>
-                      ) : null}
+                      {isRegistering && (
+                        <FormGroup className="pb-2 mr-sm-2 mb-sm-0">
+                          <Input
+                            id="fullname"
+                            name="fullname"
+                            placeholder="Full Name"
+                            type="text"
+                            onChange={registerFormik.handleChange}
+                            value={registerFormik.values.fullname}
+                          />
+                        </FormGroup>
+                      )}
+                      {isRegistering && registerFormik.errors.fullname && (
+                        <div style={{ color: "red" }}>{registerFormik.errors.fullname}</div>
+                      )}
                     </Col>
-
                     <Container>
                       <Row>
                         <Col className="d-flex justify-content-center">
                           <Button
                             type="submit"
-                            style={{
-                              width: "100px",
-                              color: "white",
-                              backgroundColor: "#000000",
-                            }}
-                            onClick={loginHandeler}
+                            style={{ width: "100px", color: "white", backgroundColor: "rgb(36 88 236)" }}
                           >
                             Submit
                             <span style={{ marginLeft: "5px" }}>
@@ -184,34 +191,45 @@ const Login = ({ token, setToken }) => {
                         </Col>
                       </Row>
                       <Row className="mt-3">
-            <Col className="d-flex justify-content-center">
-              <FontAwesomeIcon
-                icon={faInstagram}
-                size="2x"
-                style={{ marginRight: "20px", color: "#000000" }}
-              />
-              <FontAwesomeIcon
-                icon={faFacebook}
-                size="2x"
-                style={{ marginRight: "20px", color: "#000000" }}
-              />
-              <FontAwesomeIcon
-                icon={faTwitter}
-                size="2x"
-                style={{ color: "#000000" }}
-              />
-            </Col>
-          </Row>
+                        <Col className="d-flex justify-content-center">
+                          <FontAwesomeIcon
+                            icon={faInstagram}
+                            size="2x"
+                            style={{ marginRight: "20px", color: "rgb(36 88 236)" }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faFacebook}
+                            size="2x"
+                            style={{ marginRight: "20px", color: "rgb(36 88 236)" }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faTwitter}
+                            size="2x"
+                            style={{ color: "rgb(36 88 236)" }}
+                          />
+                        </Col>
+                      </Row>
                     </Container>
                   </Form>
+                  <div className="text-center mt-3">
+                    {isRegistering ? (
+                      <Button onClick={() => setIsRegistering(false)} style={{ width: "100%" }}>
+                        Already have an account? Log In
+                      </Button>
+                    ) : (
+                      <Button onClick={() => setIsRegistering(true)} style={{ width: "100%" }}>
+                        Don't have an account? Register
+                      </Button>
+                    )}
+                  </div>
                 </CardBody>
               </Card>
             </Col>
           </Row>
-         
         </Container>
       </div>
     </>
   );
 };
-export default Login
+
+export default Auth;

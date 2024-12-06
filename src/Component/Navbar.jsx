@@ -1,21 +1,22 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-const Navbar = ({token  , setToken}) => {
+import logo from "../imgs/eShop (2).png"
+const Navbar = () => {
 
   const state =  useSelector((state)=>state.handleCart)
 
 
-  const logoutHandeler = ()=>{
-    setToken("");
-    localStorage.clear()
-  }
+  // const logoutHandeler = ()=>{
+  //   setToken("");
+  //   localStorage.clear()
+  // }
   return (
     <div>
       <nav className="navbar navbar-expand-lg  navbar-light bg-white py-3 shadow-sm">
         <div className="container">
           <NavLink className="navbar-brand fw-bold fs-4" to="/#">
-            Shop App
+            <img src={logo} alt="logo" height={200} width={200} style={{margin:"-80px"}}/>
           </NavLink>
           <button
             className="navbar-toggler"
@@ -54,20 +55,14 @@ const Navbar = ({token  , setToken}) => {
               </li>
             </ul>
             <div className="buttons">
-              {!token ? (
-                <NavLink to="/login" className="btn btn-outline-dark">
-                  <i className="fa fa-sign-in me-1"></i>Login
-                </NavLink>
-              ) : null}
-
-              <NavLink to="/Cart" className="btn btn-outline-dark ms-2">
+              <NavLink to="/Cart" className="btn btn-outline-primary ms-2">
                 <i className="fa fa-shopping-cart me-1"></i>Cart ({state.length}
                 ){" "}
               </NavLink>
 
               <button
                 className="btn btn-outline-dark ms-2 "
-                onClick={() => logoutHandeler()}
+                onClick={""}
               >
                 <i className="fa fa-sign-out"></i>
                 logout

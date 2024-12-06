@@ -32,12 +32,12 @@ const Cart = () => {
                 <div className="container py-4">
                     <div className="row justify-content-center">
                         <div className="col-md-4">
-                            <img src={product.image} alt={product.title} height="200px" width="180px" />
+                            <img src={`https://localhost:7121/files/Images/${product.imageName}`} alt={product.productTittle} height="200px" width="180px" />
                         </div>
                         <div className="col-md-4">
-                            <h3>{product.title}</h3>
+                            <h3>{product.productTittle}</h3>
                             <p className="lead fw-bold">
-                                {product.qty} X ${product.price} = ${product.qty * product.price}
+                                {product.qty} X ${product.productPrice} = ${product.qty * product.productPrice}
                             </p>
                             <button className="btn btn-outline-dark me-4" onClick={()=>handleDel(product)}>
                                 <i className="fa fa-minus"></i>
@@ -58,7 +58,7 @@ const Cart = () => {
             <>
                 <div className="container">
                     <div className="row">
-                        <NavLink to="/checkout" className="btn btn-outline-dark mb-5 w-25 mx-auto">
+                        <NavLink to="/checkout" className="btn btn-outline-primary mb-5 w-25 mx-auto">
                             Proceed to Checkout
                         </NavLink>
                     </div>
